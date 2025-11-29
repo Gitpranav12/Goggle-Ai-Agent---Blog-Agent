@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+.venv/
+env/
+
+# Sensitive Keys
+.env
+
+# Auto generated data
+data/sessions/
+outputs/
