@@ -1,61 +1,81 @@
 import os
 import gradio as gr
 import json
-from datetime import datetime
+import base64
+
+# ✅ RUNTIME FOLDER CREATION (Render fix)
+SESSIONS_DIR = "data/sessions"
+os.makedirs(SESSIONS_DIR, exist_ok=True)
 
 def load_history_entries():
-    history_dir = "data/sessions"
     entries = []
-
-    if not os.path.exists(history_dir):
+    
+    if not os.path.exists(SESSIONS_DIR):
         return entries
 
-    files = sorted(os.listdir(history_dir), reverse=True)
-
+    files = sorted([f for f in os.listdir(SESSIONS_DIR) if f.endswith(".json")], reverse=True)
+    
     for file in files:
-        if file.endswith(".json"):
-            fp = os.path.join(history_dir, file)
-
-            try:
-                with open(fp, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-
-                entries.append({
-                    "file": file,
-                    "topic": data.get("topic", "No topic"),
-                    "language": data.get("language", "N/A"),
-                    "length": data.get("target_length", 0)
-                })
-            except:
-                continue
-
+        fp = os.path.join(SESSIONS_DIR, file)
+        
+        try:
+            with open(fp, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            
+            entries.append({
+                "file": file,
+                "path": fp,  # ✅ Full path
+                "topic": data.get("topic", "No topic"),
+                "language": data.get("language", "N/A").upper(),
+                "length": data.get("target_length", 0),
+                "article": data.get("final_article", "")  # ✅ TXT content
+            })
+        except:
+            continue
+    
     return entries
 
+def create_txt_data_uri(text):
+    """TXT download data URI"""
+    b64 = base64.b64encode(text.encode('utf-8')).decode()
+    return f"data:text/plain;base64,{b64}"
 
 def history_page_ui():
     history_entries = load_history_entries()
 
-    with gr.Blocks():
-        gr.Markdown("## 📜 Previous Sessions (Download Your History Anytime)")
+    gr.Markdown("## 📜 Previous Sessions")
+    
+    if not history_entries:
+        gr.Markdown("⚠️ No history available yet.")
+        return
 
-        if not history_entries:
-            gr.Markdown("No history available yet.")
-            return
+    for entry in history_entries:
+        txt_filename = entry['file'].replace(".json", ".txt")
+        
+        with gr.Box():
+            gr.Markdown(
+                f"**📌 {entry['topic']}** | {entry['length']} words | 🌍 {entry['language']}"
+            )
+            gr.Markdown(f"💾 `{entry['file']}`")
 
-        for entry in history_entries:
-            with gr.Box():
-                gr.Markdown(
-                    f"🔹 **{entry['topic']}** | 📄 {entry['length']} words | 🌐 {entry['language']}"
-                )
-
-                file_path = f"data/sessions/{entry['file']}"
+            with gr.Row():
+                # ✅ TXT DOWNLOAD (NEW!)
+                if entry['article']:
+                    txt_uri = create_txt_data_uri(entry['article'])
+                    gr.DownloadButton(
+                        "⬇️ Blog (.txt)",
+                        value=txt_uri,
+                        file_name=txt_filename
+                    )
                 
-                gr.File(
-                    value=file_path,
-                    label="⬇️ Download this History",
-                    interactive=False
+                # ✅ JSON DOWNLOAD (FIXED!)
+                gr.DownloadButton(
+                    "⬇️ Full Data (.json)",
+                    value=entry['path'],  # Direct path
+                    file_name=entry['file']
                 )
-
+            
+        gr.Markdown("---")
 
 def show():
     history_page_ui()

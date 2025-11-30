@@ -50,7 +50,7 @@ def load_history():
 
 def create_blog_ui():  # 🔥 IMPORTANT
     with gr.Blocks(title="OmniBlog Agent Studio") as app:
-        gr.Markdown("# 📝 OmniBlog Agent Studio (Groq Edition)")
+        gr.Markdown("# 📝 Google-Ai-blog-agent")
         gr.Markdown("AI powered multi-agent blog creator 🚀")
 
         with gr.Row():
