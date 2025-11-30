@@ -1,8 +1,9 @@
-import gradio as gr
-from src.ui.main_ui import create_blog_ui  # correct import
+import os, sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Hugging Face Space will launch this app
-demo = create_blog_ui()
+from src.ui.main_ui import build_app
+
+app = build_app()
 
 if __name__ == "__main__":
-    demo.launch()
+    app.launch(server_name="0.0.0.0", server_port=int(os.getenv("PORT", 7860)))
