@@ -37,8 +37,9 @@ omni-blog-agent-groq/
 │
 ├─ data/
 │ ├─ sessions/ # Saved history JSON
-│ └─ outputs/ # Blog .md / .txt exports
-│
+│ 
+├─outputs # Blog .md / .txt exports
+
 ├─ src/
 │ ├─ ui/
 │ │ ├─ pages/
@@ -67,6 +68,10 @@ omni-blog-agent-groq/
 
 ```sh
 pip install -r requirements.txt
+
+pip install gradio
+
+pip install groq
 
 --------------------------------------------------
 
