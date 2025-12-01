@@ -48,7 +48,7 @@ def load_history():
     return "No previous sessions yet."
 
 
-def build_app():  
+def build_app():
     with gr.Blocks(title="OmniBlog Agent Studio") as app:
         gr.Markdown("# 📝 Google-Ai-blog-agent")
         gr.Markdown("AI powered multi-agent blog creator 🚀")
@@ -80,9 +80,10 @@ def build_app():
             show_progress=True
         ).then(load_history, outputs=history_output)
 
-    return app  # 🔥 IMPORTANT
+    return app  # IMPORTANT
 
 
+# Local testing ke liye (Render pe optional)
 if __name__ == "__main__":
     app = build_app()
     app.launch()
