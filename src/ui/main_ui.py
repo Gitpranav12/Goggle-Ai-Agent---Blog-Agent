@@ -48,7 +48,7 @@ def load_history():
     return "No previous sessions yet."
 
 
-def create_blog_ui():  # 🔥 IMPORTANT
+def build_app():  
     with gr.Blocks(title="OmniBlog Agent Studio") as app:
         gr.Markdown("# 📝 Google-Ai-blog-agent")
         gr.Markdown("AI powered multi-agent blog creator 🚀")
@@ -84,4 +84,5 @@ def create_blog_ui():  # 🔥 IMPORTANT
 
 
 if __name__ == "__main__":
-    create_blog_ui().launch()
+    app = build_app()
+    app.launch()
